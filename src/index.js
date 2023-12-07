@@ -1,6 +1,8 @@
 import React from "react";
 import AppNavigation from "./AppNavigation";
 import { NativeBaseProvider, extendTheme } from "native-base";
+import { QueryClient, QueryClientProvider} from "react-query";
+
 
 const theme = extendTheme({
   components: {
@@ -19,10 +21,14 @@ const theme = extendTheme({
   },
 });
 
+const queryClient = new QueryClient();
+
 export default function App() {
   return (
-    <NativeBaseProvider theme={theme}>
-      <AppNavigation />
-    </NativeBaseProvider>
+    <QueryClientProvider client={queryClient}>
+      <NativeBaseProvider theme={theme}>
+        <AppNavigation />
+      </NativeBaseProvider>
+    </QueryClientProvider>
   );
 }
