@@ -1,7 +1,8 @@
 import { useToast } from "native-base";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { axiosInstance } from '../utils/axiosInstance';
 import * as SecureStore from 'expo-secure-store';
+import useToken, { TOKEN_QUERY_KEY } from "../hooks/useToken";
 
 export const FETCH_USER_QUERY_KEY = "fetch_user";
 
@@ -50,5 +51,23 @@ export function useRegister() {
           toast.show({ title: e.message });
         },
       }
+  );
+}
+
+export function useFetchUser() {
+  const token = useToken();
+
+  return useQuery (
+    [FETCH_USER_QUERY_KEY, token],
+    () =>
+      axiosInstance.post("/users/sign_in.json", null, {
+        headers: { authorization: token },
+      }),
+    {
+      enabled: !!token,
+      staleTime: Infinity,
+      cacheTime: Infinity,
+      select: (data) => data?.data,
+    }
   );
 }
